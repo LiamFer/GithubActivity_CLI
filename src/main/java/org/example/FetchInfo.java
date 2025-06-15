@@ -11,6 +11,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 @Command(name = "github-activity", mixinStandardHelpOptions = true, version = "github-activity 1.0",
@@ -26,8 +28,10 @@ public class FetchInfo implements Callable<Integer> {
         HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(String.format("https://api.github.com/users/%s/events",username))).build();
         System.out.println("Buscando Dados do " + username + "!");
         HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
-        ArrayList<Activity> a = mapper.readValue(response.body(),new TypeReference<ArrayList<Activity>>(){});
-        a.forEach(c -> System.out.println(c.getType()));
+        ArrayList<Activity> activities = mapper.readValue(response.body(),new TypeReference<ArrayList<Activity>>(){});
+        Set<Activity> c = new HashSet<>(activities);
+        c.forEach(k -> System.out.println(k.getType() + " to" + k.getRepo()));
+//        activities.forEach(a -> );
         return 0;
     }
 
