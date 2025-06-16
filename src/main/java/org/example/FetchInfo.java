@@ -29,9 +29,16 @@ public class FetchInfo implements Callable<Integer> {
         System.out.println("Buscando Dados do " + username + "!");
         HttpResponse<String> response = client.send(getRequest, HttpResponse.BodyHandlers.ofString());
         ArrayList<Activity> activities = mapper.readValue(response.body(),new TypeReference<ArrayList<Activity>>(){});
-        Set<Activity> c = new HashSet<>(activities);
-        c.forEach(k -> System.out.println(k.getType() + " to" + k.getRepo()));
-//        activities.forEach(a -> );
+        Set<Activity> set = new HashSet<>(activities);
+        for (Activity i: set){
+            int times = 0;
+            for (Activity j: activities){
+                if(j.equals(i)){
+                    times++;
+                }
+            }
+            i.report(times);
+        }
         return 0;
     }
 
